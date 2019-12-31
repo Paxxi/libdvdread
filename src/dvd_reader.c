@@ -550,9 +550,10 @@ static dvd_reader_t *DVDOpenCommon( const char *ppath,
 #elif defined(__linux__)
     mntfile = fopen( _PATH_MOUNTED, "r" );
     if( mntfile ) {
-      struct mntent *me;
+      struct mntent *me, mbuf;
+      char buf [8192];
 
-      while( ( me = getmntent( mntfile ) ) ) {
+      while( ( me = getmntent_r( mntfile, &mbuf, buf, sizeof(buf) ) ) ) {
         if( !strcmp( me->mnt_dir, path_copy ) ) {
           fprintf( stderr,
                    "libdvdread: Attempting to use device %s"
@@ -1174,13 +1175,13 @@ int InternalUDFReadBlocksRaw( const dvd_reader_t *device, uint32_t lb_number,
 
   if( !device->dev ) {
     fprintf( stderr, "libdvdread: Fatal error in block read.\n" );
-    return 0;
+    return -1;
   }
 
   ret = dvdinput_seek( device->dev, (int) lb_number );
   if( ret != (int) lb_number ) {
     fprintf( stderr, "libdvdread: Can't seek to block %u\n", lb_number );
-    return 0;
+    return ret;
   }
 
   ret = dvdinput_read( device->dev, (char *) data,
@@ -1350,6 +1351,8 @@ int DVDFileSeekForce(dvd_file_t *dvd_file, int offset, int force_size)
       force_size = (offset - 1) / DVD_VIDEO_LB_LEN + 1;
     if( dvd_file->filesize < force_size ) {
       dvd_file->filesize = force_size;
+      free(dvd_file->cache);
+      dvd_file->cache = NULL;
       fprintf(stderr, "libdvdread: Ignored size of file indicated in UDF.\n");
     }
   }

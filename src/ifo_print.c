@@ -219,6 +219,7 @@ static void ifo_print_audio_attributes(audio_attr_t *attr) {
     break;
   case 2:
     printf("mpeg1 ");
+    /* Falls Through. */ /* to MPEG-2 */
   case 3:
     printf("mpeg2ext ");
     switch(attr->quantization) {
@@ -702,8 +703,8 @@ static void ifoPrint_CELL_PLAYBACK(cell_playback_t *cell_playback, int nr) {
       printf("only still VOBUs ");
     if(cell_playback[i].restricted)
       printf("restricted cell ");
-    if(cell_playback[i].unknown2)
-      printf("Unknown 0x%x ", cell_playback[i].unknown2);
+    if(cell_playback[i].cell_type)
+      printf("cell type 0x%x ", cell_playback[i].cell_type);
     if(cell_playback[i].still_time)
       printf("still time %d ", cell_playback[i].still_time);
     if(cell_playback[i].cell_cmd_nr)

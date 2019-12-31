@@ -1,10 +1,20 @@
-libdvdread (6.0.0)
- *
+libdvdread (6.0.2)
+ * use reentrant getmntent_r
+ * fix playback of some discs, by fixing pgc_t structure
 
-libdvdread (5.0.4)
+libdvdread (6.0.1)
+ * fix a regression on some DVDs, like Resident Evil
+ * check InternalUDFReadBlocksRaw I/O issues
+ * fix issues with some DVD burnt by Nero
+
+libdvdread (6.0.0)
+ * restrict the number of symbols to be exposed to the shared-object
+ * remove dvdinput_error function
+ * improve compatibility with some DVDs (notably the eOne ones)
  * fix write after free in ifoFree functions
  * fix possible buffer overflow in open
  * additional checks on DVDReadBytes arguments
+ * fix leaks
 
 libdvdread (5.0.3)
  * cache IFO and BUP files (only for ImageFiles) in order to reduce the number
